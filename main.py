@@ -8,7 +8,6 @@ from config import PROFILE_PATH
 from core.ai_engine import generate_cover_letter, generate_answers
 from core.browser import BrowserSession
 from core.easy_apply import EasyApplyBot
-from core.job_parser import JobParser
 
 
 def load_profile() -> dict[str, Any]:
@@ -39,11 +38,9 @@ def main() -> None:
 
     browser_session.wait_for_page_settle()
     page_text = browser_session.extract_page_text()
-    parser = JobParser()
-    job = parser.parse_text(page_text)
 
-    cover = generate_cover_letter(job.description, profile)
-    answers_text = generate_answers(job.description)
+    cover = generate_cover_letter(page_text, profile)
+    answers_text = generate_answers(page_text)
 
     print("Generated Cover Letter:\n", cover)
     print("\nGenerated Answers:\n", answers_text)

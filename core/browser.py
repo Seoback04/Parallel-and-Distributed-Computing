@@ -6,13 +6,14 @@ from typing import Any
 
 import os
 
-from selenium.webdriver import Chrome
+from selenium.webdriver.chrome.webdriver import WebDriver as Chrome
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import Select, WebDriverWait
 from selenium.common.exceptions import SessionNotCreatedException
+from webdriver_manager.chrome import ChromeDriverManager
 
 from config import PAGE_SETTLE_SECONDS
 from utils.selectors import (
@@ -219,6 +220,9 @@ class BrowserSession:
 
     def _create_driver(self, use_profile: bool) -> Chrome:
         opts = Options()
+
+        # Prefer Brave as the default browser for automation.
+        # If Brave is installed, use its executable path. Otherwise, fall back to Chrome.
         if self._brave_path:
             opts.binary_location = self._brave_path
 
@@ -247,8 +251,9 @@ class BrowserSession:
         if self._chrome_driver_path:
             service = Service(self._chrome_driver_path)
             return Chrome(service=service, options=opts)
-
-        return Chrome(options=opts)
+        else:
+            service = Service(ChromeDriverManager().install())
+            return Chrome(service=service, options=opts)
 
     def _click_button_by_terms(self, terms: list[str]) -> bool:
         driver = self._require_driver()
@@ -377,4 +382,5 @@ def start_browser() -> tuple[Any, Chrome, Any]:
     session = BrowserSession(headless=False)
     session.start()
     driver = session.driver
+    assert driver is not None, "Browser failed to start"
     return None, driver, driver

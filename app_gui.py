@@ -10,7 +10,6 @@ from typing import Any
 
 from config import PROFILE_PATH, RESUMES_DIR, SCREENSHOTS_DIR
 from core.browser import BrowserSession
-from core.easy_apply import EasyApplyBot
 from core.job_search import JobSearchEngine
 from core.profile_store import ProfileStore
 from flows.easy_apply import EasyApplyFlow
@@ -258,9 +257,8 @@ class JobBotApp:
             job_url = best.url
 
         browser = BrowserSession(headless=self.headless_var.get())
-        bot = EasyApplyBot(profile_store=store)
-        easy_flow = EasyApplyFlow(bot=bot)
-        external_flow = ExternalApplyFlow(bot=bot)
+        easy_flow = EasyApplyFlow(profile_store=store)
+        external_flow = ExternalApplyFlow(profile_store=store)
 
         def prompt_missing(missing_fields: list[dict[str, Any]]) -> bool:
             changed = False
