@@ -1,0 +1,21 @@
+{
+  "include": [
+    "main.py",
+    "app_gui.py",
+    "config.py",
+    "core",
+    "flows",
+    "utils"
+  ],
+  "exclude": [
+    "**/__pycache__",
+    ".venv",
+    "build",
+    "build_release",
+    "dist",
+    "release",
+    "data"
+  ],
+  "pythonVersion": "3.13",
+  "typeCheckingMode": "basic"
+}

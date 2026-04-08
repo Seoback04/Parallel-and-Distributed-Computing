@@ -1,0 +1,52 @@
+{
+  "basics": {
+    "name": "Your Name",
+    "email": "you@example.com",
+    "phone": "+64 21 000 0000",
+    "location": "Auckland, New Zealand",
+    "city": "Auckland",
+    "country": "New Zealand",
+    "linkedin": "https://www.linkedin.com/in/your-profile",
+    "github": "https://github.com/your-username",
+    "website": "https://your-portfolio.example.com",
+    "resume_url": "",
+    "resume_path": "B:\\Bot\\data\\resumes\\profile.json",
+    "summary": "automation, scripting, and software development",
+    "first_name": "",
+    "last_name": ""
+  },
+  "experience": [
+    {
+      "title": "Automation Engineer",
+      "company": "Example Company",
+      "highlights": [
+        "Built automation scripts for repetitive business workflows",
+        "Improved reliability of browser-based application processes"
+      ]
+    }
+  ],
+  "skills": [
+    "Python",
+    "Automation",
+    "Selenium",
+    "APIs"
+  ],
+  "preferences": {
+    "work_authorized": "",
+    "requires_sponsorship": "",
+    "salary_expectation": "",
+    "notice_period": ""
+  },
+  "memory": {
+    "learned_answers": {
+      "resume_path": "B:\\Bot\\data\\resumes\\profile.json"
+    },
+    "custom_fields": {},
+    "custom_field_labels": {}
+  },
+  "job_preferences": {
+    "role": "",
+    "location": "",
+    "keywords": ""
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "first_name": "Atharva",
+  "last_name": "Bahadure",
+  "email": "your@email.com",
+  "phone": "+64XXXXXXXX",
+  "location": "Auckland",
+  "linkedin": "https://linkedin.com/in/yourprofile",
+  "github": "https://github.com/yourprofile",
+  "work_rights": "Student visa with part-time work rights",
+  "availability": "Part-time, weekends",
+  "basics": {
+    "name": "",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "phone": "",
+    "location": "",
+    "city": "",
+    "country": "",
+    "linkedin": "",
+    "github": "",
+    "website": "",
+    "resume_url": "",
+    "resume_path": "B:\\Bot\\data\\resumes\\abah844_UOA.pdf",
+    "summary": ""
+  },
+  "experience": [],
+  "skills": [],
+  "preferences": {
+    "work_authorized": "",
+    "requires_sponsorship": "",
+    "salary_expectation": "",
+    "notice_period": ""
+  },
+  "memory": {
+    "learned_answers": {
+      "resume_path": "B:\\Bot\\data\\resumes\\abah844_UOA.pdf",
+      "custom:what": "1"
+    },
+    "custom_fields": {
+      "what": "1"
+    },
+    "custom_field_labels": {
+      "what": "What"
+    }
+  },
+  "job_preferences": {
+    "role": "Software Tester",
+    "location": "",
+    "keywords": ""
+  }
+}

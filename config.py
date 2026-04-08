@@ -1,0 +1,25 @@
+from __future__ import annotations
+
+from pathlib import Path
+import sys
+
+
+if getattr(sys, "frozen", False):
+    BASE_DIR = Path(sys.executable).resolve().parent
+else:
+    BASE_DIR = Path(__file__).resolve().parent
+CORE_DIR = BASE_DIR / "core"
+FLOWS_DIR = BASE_DIR / "flows"
+UTILS_DIR = BASE_DIR / "utils"
+
+DATA_DIR = BASE_DIR / "data"
+RESUMES_DIR = DATA_DIR / "resumes"
+COVER_LETTERS_DIR = DATA_DIR / "cover_letters"
+SCREENSHOTS_DIR = DATA_DIR / "screenshots"
+
+PROFILE_PATH = BASE_DIR / "profile.json"
+
+DEFAULT_MODEL = "gpt-4.1-mini"
+MAX_EASY_APPLY_STEPS = 5
+AUTO_SEARCH_LIMIT = 8
+PAGE_SETTLE_SECONDS = 1.0
