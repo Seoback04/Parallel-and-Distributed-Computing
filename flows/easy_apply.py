@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 from datetime import datetime
-from pathlib import Path
 from typing import Any, Callable
 
 from config import COVER_LETTERS_DIR, MAX_EASY_APPLY_STEPS
 from core.easy_apply import EasyApplyBot
+from core.profile_store import ProfileStore
 
 
 MissingPromptFn = Callable[[list[dict[str, Any]]], bool]
@@ -14,8 +14,12 @@ MissingPromptFn = Callable[[list[dict[str, Any]]], bool]
 class EasyApplyFlow:
     """Handles multi-step Easy Apply flows."""
 
-    def __init__(self, bot: EasyApplyBot) -> None:
-        self.bot = bot
+    def __init__(
+        self,
+        bot: EasyApplyBot | None = None,
+        profile_store: ProfileStore | None = None,
+    ) -> None:
+        self.bot = bot or EasyApplyBot(profile_store=profile_store)
 
     def run(
         self,
