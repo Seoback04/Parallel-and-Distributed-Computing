@@ -1,0 +1,24 @@
+[
+  {
+    "timestamp": "2026-04-09 02:15:52",
+    "company": "Unknown company",
+    "role": "Software Tester",
+    "location": "Auckland",
+    "url": "https://app.zeil.com/app/candidate/search",
+    "stage": "Ready to Apply",
+    "priority": "High",
+    "notes": "",
+    "source_value": "1"
+  },
+  {
+    "timestamp": "2026-04-09 02:15:31",
+    "company": "Unknown company",
+    "role": "Software Tester",
+    "location": "Auckland",
+    "url": "https://app.zeil.com/app/candidate/search",
+    "stage": "Ready to Apply",
+    "priority": "High",
+    "notes": "",
+    "source_value": "3"
+  }
+]
