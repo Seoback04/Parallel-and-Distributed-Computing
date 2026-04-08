@@ -28,8 +28,9 @@ class EasyApplyFlow:
         resume_path: str,
         prompt_missing: MissingPromptFn,
     ) -> dict[str, Any]:
-        browser.click_apply_entry("easy_apply")
-        browser.wait_for_page_settle()
+        if not browser.has_application_form():
+            browser.click_apply_entry("easy_apply")
+            browser.wait_for_page_settle()
 
         final_result: dict[str, Any] = {"steps_completed": 0, "missing_fields": []}
         for step in range(1, MAX_EASY_APPLY_STEPS + 1):

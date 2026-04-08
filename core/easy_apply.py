@@ -38,7 +38,7 @@ class EasyApplyBot:
         "resume_file": ["resume", "cv", "upload resume", "attach resume", "file upload"],
         "cover_letter": ["cover letter", "motivation", "why this role", "why you", "message"],
         "summary": ["summary", "about you", "about me", "profile"],
-        "work_authorized": ["work authorized", "work authorization", "authorized to work", "eligible to work"],
+        "work_authorized": ["work authorized", "work authorization", "authorized to work", "eligible to work", "work auth", "authorized"],
         "requires_sponsorship": ["sponsorship", "need sponsor", "requires sponsorship", "work visa"],
         "salary_expectation": ["salary", "compensation", "expected pay", "desired salary", "pay range"],
         "notice_period": ["notice period", "availability", "start date", "available to start"],
@@ -148,7 +148,10 @@ class EasyApplyBot:
 
         for key, synonyms in self.FIELD_KEY_MAP.items():
             if any(term in field_text for term in synonyms):
-                return answers.get(key, "")
+                value = answers.get(key, "")
+                if value or tag != "select":
+                    return value
+                return self._match_select_value(field, answers, key)
 
         for key, value in answers.items():
             if not value:
@@ -157,13 +160,62 @@ class EasyApplyBot:
                 return value
 
         if tag == "select" and field.get("options"):
-            options = [str(opt).strip() for opt in field.get("options", []) if str(opt).strip()]
+            select_guess = self._match_select_value(field, answers)
+            if select_guess:
+                return select_guess
+
+        return ""
+
+    def _match_select_value(
+        self,
+        field: dict[str, Any],
+        answers: dict[str, str],
+        preferred_key: str | None = None,
+    ) -> str:
+        options = [str(opt).strip() for opt in field.get("options", []) if str(opt).strip()]
+        if not options:
+            return ""
+
+        preferred_values: list[str] = []
+        if preferred_key:
+            preferred_value = str(answers.get(preferred_key, "")).strip()
+            if preferred_value:
+                preferred_values.append(preferred_value)
+        preferred_values.extend(str(value).strip() for value in answers.values() if str(value).strip())
+
+        for candidate in preferred_values:
+            candidate_lower = candidate.lower()
             for option in options:
                 option_lower = option.lower()
-                if any(answer_value.lower() in option_lower for answer_value in answers.values() if answer_value):
+                if candidate_lower == option_lower or candidate_lower in option_lower or option_lower in candidate_lower:
                     return option
-            return options[0] if options else ""
 
+        field_text = " ".join(
+            str(field.get(part, "")).lower()
+            for part in ("label", "name", "placeholder", "aria_label")
+        )
+        if any(term in field_text for term in ["authorized", "work auth", "eligible"]):
+            return self._pick_yes_no_option(options, answers.get("work_authorized", ""))
+        if any(term in field_text for term in ["sponsor", "visa"]):
+            return self._pick_yes_no_option(options, answers.get("requires_sponsorship", ""))
+
+        for option in options:
+            if option.lower() not in {"select", "select...", "choose", "choose..."}:
+                return option
+        return ""
+
+    @staticmethod
+    def _pick_yes_no_option(options: list[str], raw_value: str) -> str:
+        value = str(raw_value).strip().lower()
+        if not value:
+            return ""
+
+        positive = value in {"yes", "y", "true", "authorized", "eligible"}
+        target_terms = {"yes", "authorized", "eligible"} if positive else {"no", "not authorized", "require sponsorship"}
+        for option in options:
+            option_lower = option.lower()
+            if any(term in option_lower for term in target_terms):
+                return option
         return ""
 
     @staticmethod

@@ -16,6 +16,7 @@ DATA_DIR = BASE_DIR / "data"
 RESUMES_DIR = DATA_DIR / "resumes"
 COVER_LETTERS_DIR = DATA_DIR / "cover_letters"
 SCREENSHOTS_DIR = DATA_DIR / "screenshots"
+RUN_HISTORY_PATH = DATA_DIR / "run_history.json"
 
 PROFILE_PATH = BASE_DIR / "profile.json"
 

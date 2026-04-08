@@ -28,8 +28,9 @@ class ExternalApplyFlow:
         resume_path: str,
         prompt_missing: MissingPromptFn,
     ) -> dict[str, Any]:
-        browser.click_apply_entry("external_apply")
-        browser.wait_for_page_settle()
+        if not browser.has_application_form():
+            browser.click_apply_entry("external_apply")
+            browser.wait_for_page_settle()
 
         page_text = browser.extract_page_text()
         fields = browser.collect_inputs()
