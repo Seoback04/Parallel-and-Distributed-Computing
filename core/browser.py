@@ -12,6 +12,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import Select, WebDriverWait
+from selenium.common.exceptions import SessionNotCreatedException
 
 from config import PAGE_SETTLE_SECONDS
 from utils.selectors import (
@@ -31,30 +32,18 @@ class BrowserSession:
         self.headless = headless
         self.driver: webdriver.Chrome | None = None
         self._brave_path = self._find_brave_path()
+        self._chrome_driver_path = self._find_chromedriver_path()
 
     # ------------------------------------------------------------------
     # Lifecycle
     # ------------------------------------------------------------------
 
     def start(self) -> None:
-        opts = Options()
-        if self._brave_path:
-            opts.binary_location = self._brave_path
-        if self.headless:
-            opts.add_argument("--headless=new")
-        opts.add_argument("--disable-gpu")
-        opts.add_argument("--start-maximized")
-        opts.add_argument("--disable-blink-features=AutomationControlled")
-        opts.add_experimental_option("excludeSwitches", ["enable-automation"])
-        
-        # Use existing Brave profile to avoid re-login
-        if self._brave_path:
-            user_data_dir = os.path.join(os.getenv("LOCALAPPDATA", ""), "BraveSoftware", "Brave-Browser", "User Data")
-            if os.path.exists(user_data_dir):
-                opts.add_argument(f"--user-data-dir={user_data_dir}")
-                opts.add_argument("--profile-directory=Default")
-        
-        self.driver = webdriver.Chrome(options=opts)
+        use_profile = not self.headless
+        try:
+            self.driver = self._create_driver(use_profile=use_profile)
+        except SessionNotCreatedException:
+            self.driver = self._create_driver(use_profile=False)
 
     def stop(self) -> None:
         if self.driver:
@@ -218,6 +207,48 @@ class BrowserSession:
             if os.path.exists(path):
                 return path
         return ""
+
+    @staticmethod
+    def _find_chromedriver_path() -> str:
+        cache_dir = Path(".selenium-cache/chromedriver")
+        if cache_dir.exists():
+            matches = sorted(cache_dir.rglob("chromedriver.exe"), reverse=True)
+            if matches:
+                return str(matches[0].resolve())
+        return ""
+
+    def _create_driver(self, use_profile: bool) -> webdriver.Chrome:
+        opts = Options()
+        if self._brave_path:
+            opts.binary_location = self._brave_path
+
+        if self.headless:
+            opts.add_argument("--headless=new")
+
+        opts.add_argument("--disable-gpu")
+        opts.add_argument("--start-maximized")
+        opts.add_argument("--disable-blink-features=AutomationControlled")
+        opts.add_argument("--remote-debugging-port=9222")
+        opts.add_argument("--no-first-run")
+        opts.add_argument("--no-default-browser-check")
+        opts.add_experimental_option("excludeSwitches", ["enable-automation"])
+
+        if use_profile and self._brave_path:
+            user_data_dir = os.path.join(
+                os.getenv("LOCALAPPDATA", ""),
+                "BraveSoftware",
+                "Brave-Browser",
+                "User Data",
+            )
+            if os.path.exists(user_data_dir):
+                opts.add_argument(f"--user-data-dir={user_data_dir}")
+                opts.add_argument("--profile-directory=Default")
+
+        if self._chrome_driver_path:
+            service = Service(self._chrome_driver_path)
+            return webdriver.Chrome(service=service, options=opts)
+
+        return webdriver.Chrome(options=opts)
 
     def _click_button_by_terms(self, terms: list[str]) -> bool:
         driver = self._require_driver()
