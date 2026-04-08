@@ -6,7 +6,7 @@ from typing import Any
 
 import os
 
-from selenium import webdriver
+from selenium.webdriver import Chrome
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -30,7 +30,7 @@ class BrowserSession:
 
     def __init__(self, headless: bool = False) -> None:
         self.headless = headless
-        self.driver: webdriver.Chrome | None = None
+        self.driver: Chrome | None = None
         self._brave_path = self._find_brave_path()
         self._chrome_driver_path = self._find_chromedriver_path()
 
@@ -190,7 +190,7 @@ class BrowserSession:
     # Internal helpers
     # ------------------------------------------------------------------
 
-    def _require_driver(self) -> webdriver.Chrome:
+    def _require_driver(self) -> Chrome:
         if self.driver is None:
             raise RuntimeError("Browser not started. Call start() first.")
         return self.driver
@@ -217,7 +217,7 @@ class BrowserSession:
                 return str(matches[0].resolve())
         return ""
 
-    def _create_driver(self, use_profile: bool) -> webdriver.Chrome:
+    def _create_driver(self, use_profile: bool) -> Chrome:
         opts = Options()
         if self._brave_path:
             opts.binary_location = self._brave_path
@@ -246,9 +246,9 @@ class BrowserSession:
 
         if self._chrome_driver_path:
             service = Service(self._chrome_driver_path)
-            return webdriver.Chrome(service=service, options=opts)
+            return Chrome(service=service, options=opts)
 
-        return webdriver.Chrome(options=opts)
+        return Chrome(options=opts)
 
     def _click_button_by_terms(self, terms: list[str]) -> bool:
         driver = self._require_driver()
@@ -307,7 +307,7 @@ class BrowserSession:
         return ""
 
     @staticmethod
-    def _locate_field(driver: webdriver.Chrome, item: dict[str, Any]) -> WebElement | None:
+    def _locate_field(driver: Chrome, item: dict[str, Any]) -> WebElement | None:
         selector = item.get("selector", "")
         xpath = item.get("xpath", "")
         name = item.get("name", "")
@@ -346,7 +346,7 @@ class BrowserSession:
                 return
 
     @staticmethod
-    def _fill_check_or_radio(driver: webdriver.Chrome, item: dict[str, Any], value: str) -> None:
+    def _fill_check_or_radio(driver: Chrome, item: dict[str, Any], value: str) -> None:
         name = item.get("name", "")
         if not name:
             return
@@ -367,7 +367,7 @@ class BrowserSession:
                 return
 
 
-def start_browser() -> tuple[Any, webdriver.Chrome, Any]:
+def start_browser() -> tuple[Any, Chrome, Any]:
     """Backward-compatible helper that returns (None, driver, driver).
 
     Old callers used ``p, browser, page = start_browser()``.
